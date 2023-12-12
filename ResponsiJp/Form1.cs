@@ -101,6 +101,39 @@ namespace ResponsiJp
             }
 
         }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            if (r == null)
+            {
+                MessageBox.Show("Mohon pilih baris data yang akan didelete", "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            if (MessageBox.Show("Apakah benar anda ingin menghapus data" + r.Cells["_nama"].Value.ToString() + " ?", "Hapus data terkonfirmasi",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) == DialogResult.Yes)
+            {
+                try
+                {
+                    conn.Open();
+                    sql = @"select * from st_delete(:_id)";
+                    cmd = new NpgsqlCommand(sql, conn);
+                    cmd.Parameters.AddWithValue("_id", r.Cells["_id"].Value.ToString());
+                    if ((int)cmd.ExecuteScalar() == 1)
+                    {
+                        MessageBox.Show("Data Users Berhasil Dihapus", "Well Done!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        conn.Close();
+                        btnLoad.PerformClick();
+                        tbName.Text = tbDep.Text = null;
+                        r = null;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error:" + ex.Message, "Delete!!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+
+        }
     }
 }
 
