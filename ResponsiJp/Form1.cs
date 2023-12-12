@@ -71,6 +71,36 @@ namespace ResponsiJp
                 MessageBox.Show("Error: " + ex.Message, "Insert FAIL!!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        private void btnEdit_Click(object sender, EventArgs e)
+        {
+            if (r == null)
+            {
+                MessageBox.Show("Mohon pilih baris data yang akan diupdate", "Good!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            try
+            {
+                conn.Open();
+                sql = @"select * from st_update(:_nama, :_nama_dep)";
+                cmd = new NpgsqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("_nama", tbName.Text);
+                cmd.Parameters.AddWithValue("_nama_dep", tbDep.Text);
+                if ((int)cmd.ExecuteScalar() == 1)
+                {
+                    MessageBox.Show("Data Users Berhasil Diupdate", "Well Done!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    conn.Close();
+                    btnLoad.PerformClick();
+                    tbName.Text = tbDep.Text = null;
+                    r = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error:" + ex.Message, "Update FAIL!!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+        }
     }
 }
 
